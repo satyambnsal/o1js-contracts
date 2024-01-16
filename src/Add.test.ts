@@ -1,6 +1,6 @@
 import { Add } from './Add';
 import { Field, Mina, PrivateKey, PublicKey, AccountUpdate } from 'o1js';
-
+import { randomOperations, verifySignature } from './Example';
 /*
  * This file specifies how to test the `Add` example smart contract. It is safe to delete this file and replace
  * with your own tests.
@@ -63,5 +63,15 @@ describe('Add', () => {
 
     const updatedNum = zkApp.num.get();
     expect(updatedNum).toEqual(Field(3));
+  });
+});
+
+describe('Example', () => {
+  it('should perform correct operations', async () => {
+    randomOperations();
+  });
+
+  it('should correctly verify a signature', async () => {
+    verifySignature();
   });
 });
