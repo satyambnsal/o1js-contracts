@@ -13,6 +13,7 @@ export function randomOperations() {
   x = x.square();
   x.assertEquals(81);
   x = x.sqrt();
+  x.assertEquals(9);
   let b = x.equals(8);
   b.assertFalse();
   b = x.greaterThan(8);
