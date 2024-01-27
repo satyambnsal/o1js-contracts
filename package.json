@@ -1,14 +1,19 @@
 {
-  "name": "hello_2",
+  "name": "minapolis-contracts",
   "version": "0.1.0",
-  "description": "",
-  "author": "",
+  "description": "MINAPolis strategic city development game zk contracts",
+  "author": {
+    "name": "Satyam Bansal",
+    "email": "satyamsgsits1994@gmail.com"
+  },
   "license": "Apache-2.0",
   "keywords": [
     "mina-zkapp",
     "mina-zk-app",
     "mina-dapp",
-    "zkapp"
+    "zkapp",
+    "onchain-game",
+    "strategy game"
   ],
   "type": "module",
   "main": "build/src/index.js",
@@ -37,5 +42,8 @@
   },
   "peerDependencies": {
     "o1js": "0.15.*"
+  },
+  "dependencies": {
+    "zkapp-cli": "^0.16.0"
   }
 }

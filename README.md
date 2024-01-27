@@ -1,4 +1,5 @@
-# Mina zkApp: Hello_2
+# MINAPolis contracts
+
 
 This template uses TypeScript.
 
@@ -24,3 +25,11 @@ npm run coverage
 ## License
 
 [Apache-2.0](LICENSE)
+
+
+
+
+## Notes
+
+Berkely Explorer URL
+https://proxy.berkeley.minaexplorer.com/graphql

@@ -13,8 +13,11 @@
  * Run with node:     `$ node build/src/interact.js <deployAlias>`.
  */
 import fs from 'fs/promises';
-import { Mina, PrivateKey } from 'o1js';
-import { Add } from './Add.js';
+import { Field, Mina, PrivateKey } from 'o1js';
+import { DebtManager } from './DebtManager.js';
+
+// Change Contract Name Here
+let AppToDeploy = DebtManager;
 
 // check command line arg
 let deployAlias = process.argv[2];
@@ -53,22 +56,29 @@ let feepayerKey = PrivateKey.fromBase58(feepayerKeysBase58.privateKey);
 let zkAppKey = PrivateKey.fromBase58(zkAppKeysBase58.privateKey);
 
 // set up Mina instance and contract we interact with
-const Network = Mina.Network(config.url);
+const Network = Mina.Network({
+  mina: config.url,
+  archive: 'https://archive.berkeley.minaexplorer.com',
+});
 const fee = Number(config.fee) * 1e9; // in nanomina (1 billion = 1.0 mina)
 Mina.setActiveInstance(Network);
 let feepayerAddress = feepayerKey.toPublicKey();
 let zkAppAddress = zkAppKey.toPublicKey();
-let zkApp = new Add(zkAppAddress);
+let zkApp = new AppToDeploy(zkAppAddress);
 
 let sentTx;
 // compile the contract to create prover keys
 console.log('compile the contract...');
-await Add.compile();
+
+await AppToDeploy.compile();
+
+// Transactions
+
 try {
   // call update() and send transaction
   console.log('build transaction and create proof...');
   let tx = await Mina.transaction({ sender: feepayerAddress, fee }, () => {
-    zkApp.update();
+    zkApp.add_debt(Field(10));
   });
   await tx.prove();
   console.log('send transaction...');

@@ -1,5 +1,5 @@
 import { PrivateKey, PublicKey, Mina, AccountUpdate, Field } from 'o1js';
-import { Factorial } from './Factorial';
+import { DebtManager } from './DebtManager';
 
 let proofsEnabled = false;
 
@@ -7,13 +7,13 @@ let deployerAccount: PublicKey;
 let deployerKey: PrivateKey;
 let senderAccount: PublicKey;
 let senderKey: PrivateKey;
-let factorialAppAddress: PublicKey;
-let factorialAppKey: PrivateKey;
-let factorialApp: Factorial;
+let debtManagerAppAddress: PublicKey;
+let debtManagerAppKey: PrivateKey;
+let debtManagerApp: DebtManager;
 
-describe('factorial', () => {
+describe('Debt Manager', () => {
   beforeAll(async () => {
-    if (proofsEnabled) await Factorial.compile();
+    if (proofsEnabled) await DebtManager.compile();
   });
 
   beforeEach(() => {
@@ -23,31 +23,31 @@ describe('factorial', () => {
       LocalInstance.testAccounts[0]);
     ({ privateKey: senderKey, publicKey: senderAccount } =
       LocalInstance.testAccounts[1]);
-    factorialAppKey = PrivateKey.random();
-    factorialAppAddress = factorialAppKey.toPublicKey();
-    factorialApp = new Factorial(factorialAppAddress);
+    debtManagerAppKey = PrivateKey.random();
+    debtManagerAppAddress = debtManagerAppKey.toPublicKey();
+    debtManagerApp = new DebtManager(debtManagerAppAddress);
   });
 
   async function localDeploy() {
     const txn = await Mina.transaction(deployerAccount, () => {
       AccountUpdate.fundNewAccount(deployerAccount);
-      factorialApp.deploy();
+      debtManagerApp.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, factorialAppKey]).send();
+    await txn.sign([deployerKey, debtManagerAppKey]).send();
   }
 
-  it('should correctly increase the factorial', async () => {
+  it('should correctly add the debt', async () => {
     await localDeploy();
-    const counter = factorialApp.counter.get();
+    const counter = debtManagerApp.counter.get();
     expect(counter).toEqual(Field(0));
 
     const txn = await Mina.transaction(senderAccount, () => {
-      factorialApp.calculate_factorial(Field(1));
+      debtManagerApp.add_debt(Field(1));
     });
     await txn.prove();
     await txn.sign([senderKey]).send();
-    const updated_counter = factorialApp.counter.get();
+    const updated_counter = debtManagerApp.counter.get();
     expect(updated_counter).toEqual(Field(1));
   });
 });
